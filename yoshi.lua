@@ -1,67 +1,81 @@
 local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
+local playerGui = player:WaitForChild("PlayerGui")
 
--- Tạo một bảng UI
+-- Tạo một bảng UI chứa nút và các thao tác
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = player:WaitForChild("PlayerGui")
+ScreenGui.Parent = playerGui
+ScreenGui.Enabled = false -- Ban đầu ẩn bảng
 
--- Tạo một bảng chứa hình chữ nhật
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 200, 0, 150)
-Frame.Position = UDim2.new(0, 10, 0, 10)
-Frame.BackgroundColor3 = Color3.fromRGB(100, 100, 100) -- Màu xám cho bảng
-Frame.Visible = false -- Bảng ban đầu sẽ ẩn đi
-Frame.Parent = ScreenGui
-
--- Tạo một nút bật / tắt cho bảng
+-- Tạo một nút để bật/tắt bảng
 local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 100, 0, 50)
-ToggleButton.Position = UDim2.new(0, 50, 0, 100)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
-ToggleButton.Text = "Toggle"
-ToggleButton.Parent = Frame
+ToggleButton.Size = UDim2.new(0, 100, 0, 50) -- Kích thước của nút
+ToggleButton.Position = UDim2.new(0, 10, 0, 10) -- Vị trí
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ mặc định khi tắt
+ToggleButton.Text = "Toggle Menu" -- Văn bản của nút
+ToggleButton.Parent = ScreenGui
 
--- Tạo một nút tăng tốc độ cho người chơi
-local SpeedButton = Instance.new("TextButton")
-SpeedButton.Size = UDim2.new(0, 100, 0, 50)
-SpeedButton.Position = UDim2.new(0, 50, 0, 10)
-SpeedButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh
-SpeedButton.Text = "Increase Speed"
-SpeedButton.Parent = Frame
+-- Biến để theo dõi trạng thái của nút
+local isMenuVisible = false
 
--- Tạo một nút để làm người chơi bay lên
-local FlyButton = Instance.new("TextButton")
-FlyButton.Size = UDim2.new(0, 100, 0, 50)
-FlyButton.Position = UDim2.new(0, 50, 0, 60)
-FlyButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255) -- Màu xanh dương
-FlyButton.Text = "Fly"
-FlyButton.Parent = Frame
+-- Hàm để hiện hoặc ẩn bảng khi nhấn nút
+local function ToggleMenu()
+    isMenuVisible = not isMenuVisible
+    ScreenGui.Enabled = isMenuVisible
 
--- Biến để theo dõi trạng thái của bảng
-local isOn = false
-
--- Hàm để bật hoặc tắt bảng
-local function Toggle()
-    isOn = not isOn
-    Frame.Visible = isOn
-    if isOn then
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
+    -- Đổi màu của nút tùy thuộc vào trạng thái của bảng
+    if isMenuVisible then
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh lá cây khi bật
     else
         ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
     end
 end
 
+-- Gắn hàm vào sự kiện Click của nút
+ToggleButton.MouseButton1Click:Connect(ToggleMenu)
+
+-- Tạo một bảng UI để chứa các nút trong menu
+local MenuFrame = Instance.new("Frame")
+MenuFrame.Size = UDim2.new(0, 200, 0, 150)
+MenuFrame.Position = UDim2.new(0, 10, 0, 70)
+MenuFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MenuFrame.Parent = ScreenGui
+
+-- Tạo nút để tăng tốc độ của người chơi
+local SpeedButton = Instance.new("TextButton")
+SpeedButton.Size = UDim2.new(0, 180, 0, 40)
+SpeedButton.Position = UDim2.new(0, 10, 0, 10)
+SpeedButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SpeedButton.Text = "Increase Speed"
+SpeedButton.Parent = MenuFrame
+
+-- Tạo nút để kích hoạt noclip
+local NoclipButton = Instance.new("TextButton")
+NoclipButton.Size = UDim2.new(0, 180, 0, 40)
+NoclipButton.Position = UDim2.new(0, 10, 0, 60)
+NoclipButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NoclipButton.Text = "Toggle Noclip"
+NoclipButton.Parent = MenuFrame
+
 -- Hàm để tăng tốc độ của người chơi
 local function IncreaseSpeed()
-    character.Humanoid.WalkSpeed = 300
+    player.Character.Humanoid.WalkSpeed = 300
 end
 
--- Hàm để làm người chơi bay lên
-local function Fly()
-    character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-end
-
--- Gắn hàm vào sự kiện Click của các nút
-ToggleButton.MouseButton1Click:Connect(Toggle)
+-- Gắn hàm vào sự kiện Click của nút tăng tốc độ
 SpeedButton.MouseButton1Click:Connect(IncreaseSpeed)
-FlyButton.MouseButton1Click:Connect(Fly)
+
+-- Biến để theo dõi trạng thái của noclip
+local isNoclipEnabled = false
+
+-- Hàm để bật/tắt noclip
+local function ToggleNoclip()
+    isNoclipEnabled = not isNoclipEnabled
+    if isNoclipEnabled then
+        player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+    else
+        player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+    end
+end
+
+-- Gắn hàm vào sự kiện Click của nút noclip
+NoclipButton.MouseButton1Click:Connect(ToggleNoclip)
