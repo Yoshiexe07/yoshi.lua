@@ -1,3 +1,6 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ToggleFlyingEvent = ReplicatedStorage:WaitForChild("ToggleFlyingEvent")
+
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
@@ -25,12 +28,11 @@ local isFlyingEnabled = false
 local function ToggleFlying()
     isFlyingEnabled = not isFlyingEnabled
     if isFlyingEnabled then
-        character.Humanoid.PlatformStand = true
         ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
     else
-        character.Humanoid.PlatformStand = false
         ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
     end
+    ToggleFlyingEvent:FireServer(isFlyingEnabled, 40) -- Gửi trạng thái bay và tốc độ bay tới máy chủ
 end
 
 -- Gắn hàm vào sự kiện Click của nút
