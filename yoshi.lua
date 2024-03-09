@@ -1,9 +1,6 @@
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-
 -- Tạo một bảng UI
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = player:WaitForChild("PlayerGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
 -- Tạo một nút chứa hình chữ nhật
 local ToggleButton = Instance.new("TextButton")
@@ -13,31 +10,25 @@ ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ mặc đ
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu chữ
 ToggleButton.TextSize = 20 -- Kích thước chữ
 ToggleButton.Font = Enum.Font.SourceSansBold -- Phông chữ
-ToggleButton.Text = "Toggle Flying (Speed: 40)" -- Văn bản của nút
+ToggleButton.Text = "Toggle Admin Infinite Yield" -- Văn bản của nút
 ToggleButton.BorderSizePixel = 0 -- Không có viền
 ToggleButton.AutoButtonColor = false -- Tắt màu nền tự động khi nhấn
 ToggleButton.Parent = ScreenGui
 
--- Biến để theo dõi trạng thái của nút và tốc độ bay
-local isFlyingEnabled = false
-local flySpeed = 40
+-- Biến để theo dõi trạng thái của nút
+local isAIYEnabled = false
 
--- Hàm để bật hoặc tắt khả năng bay của nhân vật khi nhấn nút
-local function ToggleFlying()
-    isFlyingEnabled = not isFlyingEnabled
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        if isFlyingEnabled then
-            humanoid.PlatformStand = true -- Cho phép bay
-            humanoid.HipHeight = 0 -- Giảm cao độ của dải hông để tránh việc nhân vật rơi khi bay
-            ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
-        else
-            humanoid.PlatformStand = false -- Vô hiệu hóa bay
-            humanoid.HipHeight = 2 -- Khôi phục cao độ của dải hông
-            ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
-        end
+-- Hàm để bật hoặc tắt Admin Infinite Yield khi nhấn nút
+local function ToggleAIY()
+    isAIYEnabled = not isAIYEnabled
+    if isAIYEnabled then
+        require(game:GetService("ReplicatedStorage"):WaitForChild("Admin"):WaitForChild("MainModule")):SetAdmin(true)
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
+    else
+        require(game:GetService("ReplicatedStorage"):WaitForChild("Admin"):WaitForChild("MainModule")):SetAdmin(false)
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
     end
 end
 
 -- Gắn hàm vào sự kiện Click của nút
-ToggleButton.MouseButton1Click:Connect(ToggleFlying)
+ToggleButton.MouseButton1Click:Connect(ToggleAIY)
