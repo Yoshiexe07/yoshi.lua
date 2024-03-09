@@ -13,46 +13,25 @@ ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ mặc đ
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu chữ
 ToggleButton.TextSize = 20 -- Kích thước chữ
 ToggleButton.Font = Enum.Font.SourceSansBold -- Phông chữ
-ToggleButton.Text = "Toggle Speed" -- Văn bản của nút
+ToggleButton.Text = "Toggle Flying" -- Văn bản của nút
 ToggleButton.BorderSizePixel = 0 -- Không có viền
 ToggleButton.AutoButtonColor = false -- Tắt màu nền tự động khi nhấn
 ToggleButton.Parent = ScreenGui
 
 -- Biến để theo dõi trạng thái của nút
-local isOn = false
-local initialWalkSpeed = character.Humanoid.WalkSpeed
-local increasedSpeed = 500
+local isFlyingEnabled = false
 
--- Hàm để tăng tốc độ của người chơi
-local function IncreaseSpeed()
-    character.Humanoid.WalkSpeed = increasedSpeed
-    print("Player speed increased to " .. increasedSpeed)
-end
-
--- Hàm để quay lại tốc độ ban đầu của người chơi
-local function RestoreSpeed()
-    character.Humanoid.WalkSpeed = initialWalkSpeed
-    print("Player speed restored to initial value")
-end
-
--- Hàm để bật hoặc tắt tăng tốc độ của người chơi khi nhấn nút
-local function Toggle()
-    isOn = not isOn
-    if isOn then
-        -- Tăng tốc độ khi nhấn nút
-        IncreaseSpeed()
+-- Hàm để bật hoặc tắt khả năng bay của nhân vật khi nhấn nút
+local function ToggleFlying()
+    isFlyingEnabled = not isFlyingEnabled
+    if isFlyingEnabled then
+        character.Humanoid.PlatformStand = true
         ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
     else
-        -- Quay lại tốc độ ban đầu khi nhấn nút
-        RestoreSpeed()
+        character.Humanoid.PlatformStand = false
         ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
     end
 end
 
 -- Gắn hàm vào sự kiện Click của nút
-ToggleButton.MouseButton1Click:Connect(Toggle)
-
--- Sự kiện để kiểm tra khi nhân vật chết
-character.Humanoid.Died:Connect(function()
-    ToggleButton.Visible = true -- Hiển thị nút khi nhân vật chết
-end)
+ToggleButton.MouseButton1Click:Connect(ToggleFlying)
