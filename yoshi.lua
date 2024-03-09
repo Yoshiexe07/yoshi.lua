@@ -54,5 +54,5 @@ ToggleButton.MouseButton1Click:Connect(Toggle)
 
 -- Sự kiện để kiểm tra khi nhân vật chết
 character.Humanoid.Died:Connect(function()
-    ToggleButton.Visible = false -- Ẩn nút khi nhân vật chết
+    ToggleButton.Visible = true -- Hiển thị nút khi nhân vật chết
 end)
