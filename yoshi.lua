@@ -15,34 +15,37 @@ ToggleButton.Parent = ScreenGui
 
 -- Biến để theo dõi trạng thái của nút
 local isOn = false
-local highlightingEnabled = false
+local loopEnabled = false
+local loopThread = nil
 
--- Hàm để hiện tên người chơi và làm nổi bật họ
-local function highlightPlayer()
-    if highlightingEnabled then
-        -- Thực hiện việc làm nổi bật người chơi ở đây (ví dụ: thay đổi màu sắc, hiện tên, ...)
-        print("Player Highlighted!")
+-- Hàm chạy vòng lặp
+local function loopFunction()
+    while loopEnabled do
+        print("Loop iteration")
+        wait(1)
     end
 end
 
--- Hàm để bật hoặc tắt code khi nhấn nút
+-- Hàm để bật hoặc tắt luồng lặp khi nhấn nút
 local function Toggle()
     isOn = not isOn
     if isOn then
-        -- Bật code khi nhấn nút
-        highlightingEnabled = true
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0) -- Màu vàng khi bật
-        print("Code is enabled!")
+        -- Bật luồng lặp khi nhấn nút
+        loopEnabled = true
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
+        print("Loop started!")
+        loopThread = coroutine.create(loopFunction)
+        coroutine.resume(loopThread)
     else
-        -- Tắt code khi nhấn nút
-        highlightingEnabled = false
+        -- Dừng luồng lặp khi nhấn nút
+        loopEnabled = false
         ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
-        print("Code is disabled!")
+        print("Loop stopped!")
+        if loopThread then
+            coroutine.yield(loopThread)
+        end
     end
 end
 
 -- Gắn hàm vào sự kiện Click của nút
 ToggleButton.MouseButton1Click:Connect(Toggle)
-
--- Gọi hàm hiện tên người chơi và làm nổi bật họ
-player.CharacterAdded:Connect(highlightPlayer)
