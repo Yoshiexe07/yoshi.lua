@@ -25,12 +25,17 @@ local flySpeed = 40
 -- Hàm để bật hoặc tắt khả năng bay của nhân vật khi nhấn nút
 local function ToggleFlying()
     isFlyingEnabled = not isFlyingEnabled
-    if isFlyingEnabled then
-        character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Physics)
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
-    else
-        character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.GettingUp)
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        if isFlyingEnabled then
+            humanoid.PlatformStand = true -- Cho phép bay
+            humanoid.HipHeight = 0 -- Giảm cao độ của dải hông để tránh việc nhân vật rơi khi bay
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
+        else
+            humanoid.PlatformStand = false -- Vô hiệu hóa bay
+            humanoid.HipHeight = 2 -- Khôi phục cao độ của dải hông
+            ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
+        end
     end
 end
 
