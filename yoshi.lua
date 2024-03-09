@@ -10,7 +10,7 @@ local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0, 100, 0, 50) -- Kích thước của nút
 ToggleButton.Position = UDim2.new(0, 10, 0, 10) -- Vị trí
 ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ mặc định khi tắt
-ToggleButton.Text = "Toggle" -- Văn bản của nút
+ToggleButton.Text = "Nguyen" -- Văn bản của nút
 ToggleButton.Parent = ScreenGui
 
 -- Biến để theo dõi trạng thái của nút
