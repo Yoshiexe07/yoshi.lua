@@ -1,13 +1,6 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 
--- Tốc độ ban đầu của người chơi
-local initialWalkSpeed = character.Humanoid.WalkSpeed
-
--- Lưu trữ trạng thái của nút vào dữ liệu cục bộ
-local playerData = game:GetService("DataStoreService"):GetDataStore("PlayerData")
-local isOn = playerData:GetAsync("ToggleButtonState_" .. player.UserId) or false
-
 -- Tạo một bảng UI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = player:WaitForChild("PlayerGui")
@@ -16,7 +9,7 @@ ScreenGui.Parent = player:WaitForChild("PlayerGui")
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0, 150, 0, 50) -- Kích thước của nút
 ToggleButton.Position = UDim2.new(0, 10, 0, 10) -- Vị trí
-ToggleButton.BackgroundColor3 = isOn and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0) -- Màu xanh khi bật, màu đỏ khi tắt
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ mặc định khi tắt
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu chữ
 ToggleButton.TextSize = 20 -- Kích thước chữ
 ToggleButton.Font = Enum.Font.SourceSansBold -- Phông chữ
@@ -25,10 +18,15 @@ ToggleButton.BorderSizePixel = 0 -- Không có viền
 ToggleButton.AutoButtonColor = false -- Tắt màu nền tự động khi nhấn
 ToggleButton.Parent = ScreenGui
 
+-- Biến để theo dõi trạng thái của nút
+local isOn = false
+local initialWalkSpeed = character.Humanoid.WalkSpeed
+local increasedSpeed = 500
+
 -- Hàm để tăng tốc độ của người chơi
 local function IncreaseSpeed()
-    character.Humanoid.WalkSpeed = 300
-    print("Player speed increased to 300")
+    character.Humanoid.WalkSpeed = increasedSpeed
+    print("Player speed increased to " .. increasedSpeed)
 end
 
 -- Hàm để quay lại tốc độ ban đầu của người chơi
@@ -49,9 +47,12 @@ local function Toggle()
         RestoreSpeed()
         ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
     end
-    -- Lưu trạng thái mới của nút vào dữ liệu cục bộ
-    playerData:SetAsync("ToggleButtonState_" .. player.UserId, isOn)
 end
 
 -- Gắn hàm vào sự kiện Click của nút
 ToggleButton.MouseButton1Click:Connect(Toggle)
+
+-- Sự kiện để kiểm tra khi nhân vật chết
+character.Humanoid.Died:Connect(function()
+    ToggleButton.Visible = false -- Ẩn nút khi nhân vật chết
+end)
