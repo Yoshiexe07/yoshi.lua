@@ -1,50 +1,31 @@
+-- Wait for the player to be loaded
 local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local character = player.Character or player.CharacterAdded:Wait()
 
--- Tạo một bảng UI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = playerGui
+-- Get the Humanoid of the character
+local humanoid = character:WaitForChild("Humanoid")
 
--- Biến để theo dõi trạng thái của bảng
-local isTableShown = false
-local tableFrame = nil
+-- Key bindings
+local flyKey = Enum.KeyCode.F -- Change this to any key you want
 
--- Tạo một nút bật/tắt cho bảng
-local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 100, 0, 50)
-ToggleButton.Position = UDim2.new(0, 10, 0, 10)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-ToggleButton.Text = "Toggle Table"
-ToggleButton.Parent = ScreenGui
-
--- Hàm để tạo hoặc ẩn bảng
-local function ToggleTable()
-    if isTableShown then
-        if tableFrame then
-            tableFrame:Destroy()
-            tableFrame = nil
-        end
+-- Function to toggle flying
+local isFlying = false
+local function toggleFly()
+    isFlying = not isFlying
+    if isFlying then
+        humanoid.PlatformStand = true
+        humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+        humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics, false)
     else
-        tableFrame = Instance.new("Frame")
-        tableFrame.Size = UDim2.new(0, 200, 0, 100)
-        tableFrame.Position = UDim2.new(0.5, -100, 0.5, -50)
-        tableFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        tableFrame.BorderSizePixel = 2
-        tableFrame.Parent = ScreenGui
-
-        -- Tạo nút trong bảng để tăng tốc độ
-        local SpeedButton = Instance.new("TextButton")
-        SpeedButton.Size = UDim2.new(0, 150, 0, 40)
-        SpeedButton.Position = UDim2.new(0.5, -75, 0.5, -20)
-        SpeedButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
-        SpeedButton.Text = "Increase Speed"
-        SpeedButton.Parent = tableFrame
-        SpeedButton.MouseButton1Click:Connect(function()
-            player.Character.Humanoid.WalkSpeed = 300
-        end)
+        humanoid.PlatformStand = false
+        humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+        humanoid:SetStateEnabled(Enum.HumanoidStateType.Physics, true)
     end
-    isTableShown = not isTableShown
 end
 
--- Gắn hàm vào sự kiện Click của nút bật/tắt
-ToggleButton.MouseButton1Click:Connect(ToggleTable)
+-- Listen for the fly key press
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == flyKey then
+        toggleFly()
+    end
+end)
