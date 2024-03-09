@@ -16,8 +16,8 @@ local adButton = widget.newButton({
 })
 
 -- Đặt vị trí của nút
-adButton.x = display.contentCenterX
-adButton.y = display.contentCenterY
+adButton.x = 100
+adButton.y = 100
 
 -- Thêm nút vào scene hiện tại
 local sceneGroup = display.newGroup()
