@@ -11,7 +11,7 @@ ScreenGui.Parent = player:WaitForChild("PlayerGui")
 -- Tạo một nút chứa hình chữ nhật
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0, 150, 0, 50) -- Kích thước của nút
-ToggleButton.Position = UDim2.new(0.5, -75, 0.1, 0) -- Vị trí
+ToggleButton.Position = UDim2.new(0, 10, 0, 10) -- Vị trí
 ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ mặc định khi tắt
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu chữ
 ToggleButton.TextSize = 20 -- Kích thước chữ
