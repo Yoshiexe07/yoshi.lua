@@ -7,7 +7,9 @@ ScreenGui.Parent = playerGui
 
 -- Biến để theo dõi trạng thái của nút và bảng
 local isOn = false
+local isDragging = false
 local rectangleFrame = nil
+local lastMousePosition = nil
 
 -- Tạo một nút chứa hình chữ nhật
 local ToggleButton = Instance.new("TextButton")
@@ -28,6 +30,25 @@ local function ToggleRectangleFrame()
             rectangleFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             rectangleFrame.BorderSizePixel = 2
             rectangleFrame.Parent = ScreenGui
+            rectangleFrame.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    isDragging = true
+                    lastMousePosition = input.Position
+                end
+            end)
+            rectangleFrame.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    isDragging = false
+                end
+            end)
+            input.InputChanged:Connect(function(input)
+                if isDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    local delta = input.Position - lastMousePosition
+                    lastMousePosition = input.Position
+                    rectangleFrame.Position = UDim2.new(rectangleFrame.Position.X.Scale, rectangleFrame.Position.X.Offset + delta.X,
+                                                        rectangleFrame.Position.Y.Scale, rectangleFrame.Position.Y.Offset + delta.Y)
+                end
+            end)
         end
     else
         -- Nếu nút được tắt, ẩn bảng
