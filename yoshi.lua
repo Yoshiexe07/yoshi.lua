@@ -1,34 +1,21 @@
--- Tạo một bảng UI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local AdminCommand = require(path.to.AdminCommand) -- Thay đổi path.to.AdminCommand thành đường dẫn thích hợp của AdminCommand trong dự án của bạn.
 
--- Tạo một nút chứa hình chữ nhật
-local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 150, 0, 50) -- Kích thước của nút
-ToggleButton.Position = UDim2.new(0, 10, 0, 10) -- Vị trí
-ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ mặc định khi tắt
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- Màu chữ
-ToggleButton.TextSize = 20 -- Kích thước chữ
-ToggleButton.Font = Enum.Font.SourceSansBold -- Phông chữ
-ToggleButton.Text = "Toggle Admin Infinite Yield" -- Văn bản của nút
-ToggleButton.BorderSizePixel = 0 -- Không có viền
-ToggleButton.AutoButtonColor = false -- Tắt màu nền tự động khi nhấn
-ToggleButton.Parent = ScreenGui
+local button = script.Parent -- Đặt nút làm con của đối tượng GUI (VD: một UIButton trong Roblox).
+local infiniteYieldEnabled = false -- Ban đầu, Infinite Yield không được kích hoạt.
 
--- Biến để theo dõi trạng thái của nút
-local isAIYEnabled = false
-
--- Hàm để bật hoặc tắt Admin Infinite Yield khi nhấn nút
-local function ToggleAIY()
-    isAIYEnabled = not isAIYEnabled
-    if isAIYEnabled then
-        require(game:GetService("ReplicatedStorage"):WaitForChild("Admin"):WaitForChild("MainModule")):SetAdmin(true)
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Màu xanh khi bật
+local function toggleInfiniteYield()
+    if infiniteYieldEnabled then
+        -- Nếu Infinite Yield đã được kích hoạt, tắt nó.
+        AdminCommand:DisableInfiniteYield()
+        print("Infinite Yield đã được tắt.")
     else
-        require(game:GetService("ReplicatedStorage"):WaitForChild("Admin"):WaitForChild("MainModule")):SetAdmin(false)
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Màu đỏ khi tắt
+        -- Nếu Infinite Yield chưa được kích hoạt, kích hoạt nó.
+        AdminCommand:EnableInfiniteYield()
+        print("Infinite Yield đã được kích hoạt.")
     end
+    -- Chuyển đổi trạng thái của biến infiniteYieldEnabled.
+    infiniteYieldEnabled = not infiniteYieldEnabled
 end
 
--- Gắn hàm vào sự kiện Click của nút
-ToggleButton.MouseButton1Click:Connect(ToggleAIY)
+-- Gắn sự kiện nhấn vào nút.
+button.MouseButton1Click:Connect(toggleInfiniteYield)
